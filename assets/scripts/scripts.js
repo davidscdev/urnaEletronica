@@ -9,10 +9,12 @@ let telaDireita = document.querySelector('.tela--principal--direita');
 
 let etapaAtual = 0;
 let numeroDigitado = '';
+let votoBranco = false;
 
 function comecarEtapa() {
     let etapa = etapas[etapaAtual]; //Seleciona os itens da etapa usando a variável global.
-
+    numeroDigitado = '';
+    votoBranco = false;
     let numeroHTML = '';
 
     for (let index = 0; index < etapa.numeros; index++) {
@@ -47,14 +49,39 @@ function clicou(n) {
 
 function branco() {
     console.log('BRANCO CLICADO');
+    votoBranco = true;
+    telaCabecalho.style.display = 'block';
+    telaDados.innerHTML = `<div class="aviso--grande pisca">VOTO EM BRANCO</div>`;
+    telaNumeros.style.display = 'none';
+    telaRodape.style.display = 'block';
 }
 
 function corrige() {
     console.log('CORRIGE CLICADO');
+    comecarEtapa();
 }
 
 function confirma() {
     console.log('CONFIRMA CLICADO');
+
+    let votoConfirmado = false;
+
+    if (votoBranco) {
+        console.log('Voto confirmado: BRANCO.')
+        votoConfirmado = true;
+    } else if (numeroDigitado.length > 1) {
+        console.log(`Voto confirmado: ${numeroDigitado}`)
+        votoConfirmado = true;
+    }
+
+    if (votoConfirmado) {
+        etapaAtual++;
+        if (etapas[etapaAtual] !== undefined) {
+            comecarEtapa();
+        } else {
+            document.querySelector('.tela').innerHTML = `<div class="aviso--gigante pisca">FIM</div>`;
+        }
+    }
 }
 
 function atualizaInterface() {
@@ -75,9 +102,16 @@ function atualizaInterface() {
         let fotosHTML = ``;
 
         for (let i in candidato.fotos) {
-            fotosHTML += `<div class="tela--principal--direita--imagem">
+
+            if (!candidato.fotos[i].small) {
+                fotosHTML += `<div class="tela--principal--direita--imagem">
+                <img src="assets/imagens/${candidato.fotos[i].url}" alt=""> ${candidato.fotos[i].legenda}
+            </div>`
+            } else {
+                fotosHTML += `<div class="tela--principal--direita--imagem pequeno">
             <img src="assets/imagens/${candidato.fotos[i].url}" alt=""> ${candidato.fotos[i].legenda}
         </div>`;
+            }
         }
 
         telaDireita.innerHTML = fotosHTML;

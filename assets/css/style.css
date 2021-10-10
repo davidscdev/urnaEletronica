@@ -155,3 +155,12 @@ body {
 .aviso--grande {
     font-size: 20px;
 }
+
+.aviso--gigante {
+    font-size: 60px;
+    font-weight: bold;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
